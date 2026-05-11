@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Donasi - Haikal Hafidz</title>
+    <link rel="stylesheet" href="css/"style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .riwayat-container {
+            max-width: 1000px;
+            margin: 100px auto 50px;
+            padding: 2rem;
+        }
+        
+        .search-form {
+            background-color: var(--dark-card);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-form .form-group {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+        
+        .form-control {
+            padding: 0.8rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--dark-text);
+            font-family: 'Poppins', sans-serif;
+            flex: 1;
+        }
+        
+        .btn-search {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .btn-search:hover {
+            background-color: #5a52e0;
+        }
+        
+        .donasi-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--dark-card);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .donasi-table th,
+        .donasi-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .donasi-table th {
+            background-color: rgba(108, 99, 255, 0.1);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .donasi-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        
+        .status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-pending {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .status-success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: var(--dark-text);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--primary-color);
+        }
+        
+        .total-donasi {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(255, 101, 132, 0.1));
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        
+        .total-donasi span {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo h2 a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .burger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 3px;
+            background-color: #ffffff;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #6c63ff, #ff6584);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .social-links {
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            color: #ffffff;
+            margin: 0 0.5rem;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                right: -100%;
+                top: 70px;
+                height: calc(100vh - 70px);
+                background: rgba(0, 0, 0, 0.95);
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+                transition: 0.5s;
+                padding-top: 2rem;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .burger {
+                display: block;
+            }
+            
+            .riwayat-container {
+                margin: 80px 1rem 30px;
+                padding: 1rem;
+            }
+            
+            .donasi-table {
+                font-size: 0.8rem;
+            }
+            
+            .donasi-table th,
+            .donasi-table td {
+                padding: 0.5rem;
+            }
+            
+            .search-form .form-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h2><a href="index.html" style="color: var(--primary-color); text-decoration: none;">Haikal Hafidz</a></h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="index.html#about">Tentang</a></li>
+                <li><a href="index.html#education">Pendidikan</a></li>
+                <li><a href="index.html#experience">Pengalaman</a></li>
+                <li><a href="index.html#skills">Keahlian</a></li>
+                <li><a href="donate.html">Donasi</a></li>
+                <li><a href="riwayat_donasi.html" style="color: var(--primary-color);">Riwayat Donasi</a></li>
+            </ul>
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="riwayat-container">
+            <h2 class="section-title">Riwayat Donasi</h2>
+            
+            <div class="search-form">
+                <div class="form-group">
+                    <div style="flex: 1;">
+                        <label for="search">Cari berdasarkan kode donasi, nama, atau email:</label>
+                        <input type="text" id="search" name="search" class="form-control" 
+                               placeholder="Masukkan kode donasi, nama, atau email...">
+                    </div>
+                    <button type="button" class="btn-search" onclick="loadDonations()">Cari</button>
+                </div>
+            </div>
+            
+            <div id="totalDonasi" class="total-donasi" style="display: none;">
+                Total Donasi Terkumpul: <span id="totalAmount">Rp 0</span>
+            </div>
+            
+            <div id="donasiTableContainer">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-pulse"></i> Memuat data...
+                </div>
+            </div>
+            
+            <a href="donasi.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Halaman Donasi</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Haikal Hafidz. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/HaikalHafidz" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.instagram.com/ecaou_?igsh=M3ZvNWV5bDlwejB3" target="_blank"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Navigation Toggle
+        const burger = document.querySelector('.burger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        burger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            burger.classList.toggle('toggle');
+        });
+        
+        // Fungsi untuk memuat data donasi
+        async function loadDonations() {
+            const searchInput = document.getElementById('search');
+            const searchValue = searchInput ? searchInput.value : '';
+            const container = document.getElementById('donasiTableContainer');
+            
+            // Tampilkan loading
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-pulse"></i> Memuat data...</div>';
+            
+            try {
+                const url = `api_donasi.php${searchValue ? '?search=' + encodeURIComponent(searchValue) : ''}`;
+                const response = await fetch(url);
+                const donations = await response.json();
+                
+                if (donations.error) {
+                    container.innerHTML = `<div class="no-data">${donations.error}</div>`;
+                    document.getElementById('totalDonasi').style.display = 'none';
+                    return;
+                }
+                
+                if (donations.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-data">
+                            <h3>Tidak ada data donasi yang ditemukan.</h3>
+                            <p>${searchValue ? 'Coba gunakan kata kunci yang berbeda.' : 'Belum ada donasi yang masuk.'}</p>
+                        </div>
+                    `;
+                    document.getElementById('totalDonasi').style.display = 'none';
+                    return;
+                }
+                
+                // Hitung total donasi (hanya yang status success)
+                let total = 0;
+                donations.forEach(donation => {
+                    if (donation.status === 'success') {
+                        total += parseFloat(donation.jumlah);
+                    }
+                });
+                
+                // Tampilkan total donasi
+                const totalElement = document.getElementById('totalAmount');
+                if (totalElement) {
+                    totalElement.textContent = 'Rp ' + total.toLocaleString('id-ID');
+                }
+                document.getElementById('totalDonasi').style.display = 'block';
+                
+                // Buat tabel
+                let tableHTML = `
+                    <table class="donasi-table">
+                        <thead>
+                            <tr>
+                                <th>Kode Donasi</th>
+                                <th>Nama Donatur</th>
+                                <th>Email</th>
+                                <th>Jumlah</th>
+                                <th>Metode</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                donations.forEach(donation => {
+                    const jumlahFormat = 'Rp ' + parseFloat(donation.jumlah).toLocaleString('id-ID');
+                    const tanggal = new Date(donation.tanggal).toLocaleString('id-ID');
+                    
+                    let metodeText = '';
+                    switch (donation.metode_pembayaran) {
+                        case 'transfer_bank':
+                            metodeText = 'Transfer Bank';
+                            break;
+                        case 'e_wallet':
+                            metodeText = 'E-Wallet';
+                            break;
+                        case 'qris':
+                            metodeText = 'QRIS';
+                            break;
+                        default:
+                            metodeText = donation.metode_pembayaran;
+                    }
+                    
+                    const statusClass = donation.status === 'success' ? 'status-success' : 'status-pending';
+                    const statusText = donation.status === 'success' ? 'Berhasil' : 'Menunggu';
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${escapeHtml(donation.kode_donasi)}</td>
+                            <td>${escapeHtml(donation.nama)}</td>
+                            <td>${escapeHtml(donation.email)}</td>
+                            <td>${jumlahFormat}</td>
+                            <td>${metodeText}</td>
+                            <td>${tanggal}</td>
+                            <td><span class="status ${statusClass}">${statusText}</span></td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+                
+                container.innerHTML = tableHTML;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<div class="no-data">Terjadi kesalahan saat memuat data. Silakan coba lagi.</div>';
+                document.getElementById('totalDonasi').style.display = 'none';
+            }
+        }
+        
+        // Fungsi untuk escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Load data saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDonations();
+            
+            // Event listener untuk tombol Enter pada search
+            const searchInput = document.getElementById('search');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        loadDonations();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
