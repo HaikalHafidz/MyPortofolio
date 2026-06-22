@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Haikal Hafidz - Portofolio</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
+    <div id="preloader" aria-hidden="false">
+        <div class="preloader-inner">
+            <div class="preloader-logo" aria-hidden="true">HH</div>
+            <div class="preloader-line" aria-hidden="true"></div>
+            <div class="preloader-name">Muhammad Haikal Hafidz</div>
+        </div>
+    </div>
     <header>
         <nav>
             <div class="logo">
@@ -21,7 +31,6 @@
                 <li><a href="#experience">Pengalaman</a></li>
                 <li><a href="#skills">Keahlian</a></li>
                 <li><a href="#contact">Kontak</a></li>
-                <li><a href="donate.html">Donasi</a></li>
             </ul>
             <div class="burger">
                 <div class="line1"></div>
@@ -45,7 +54,7 @@
         </div>
         <div class="hero-image">
             <div class="image-container">
-                <img src="profile.jpg" alt="Muhammad Haikal Hafidz" class="profile-image">
+                <img src="img/profile.jpg" alt="Muhammad Haikal Hafidz" class="profile-image">
                 <div class="image-overlay"></div>
             </div>
         </div>
@@ -57,8 +66,10 @@
             <div class="about-content">
                 <div class="about-text">
                     <p>Muhammad Haikal Hafidz
-                    Mahasiswa Teknik Informatika yang berfokus pada pengembangan web dan pengolahan data. Memiliki kemampuan dalam Java, manajemen kelas, serta kolaborasi proyek.
-                    Aktif mencari peluang kerja paruh waktu untuk mengasah keterampilan teknis dan berkontribusi dalam lingkungan profesional.</p>
+                        Mahasiswa Teknik Informatika yang berfokus pada pengembangan web dan pengolahan data. Memiliki
+                        kemampuan dalam Java, manajemen kelas, serta kolaborasi proyek.
+                        Aktif mencari peluang kerja paruh waktu untuk mengasah keterampilan teknis dan berkontribusi
+                        dalam lingkungan profesional.</p>
                 </div>
                 <div class="contact-info">
                     <h3>Informasi Kontak</h3>
@@ -102,7 +113,8 @@
                 <p class="experience-period">2023 - 2024</p>
                 <p class="experience-location">Boarding School Ribathul Mujtaba | JL. Cipayung Kota Depok</p>
                 <ul>
-                    <li>Memiliki pengalaman dalam mengelola kelas dengan siswa serta membentuk organisasi ikatan pelajar</li>
+                    <li>Memiliki pengalaman dalam mengelola kelas dengan siswa serta membentuk organisasi ikatan pelajar
+                    </li>
                     <li>Bekerja sama dengan Lembaga Baznas dengan memberikan dana untuk program-program Pendidikan</li>
                 </ul>
             </div>
@@ -112,32 +124,77 @@
     <section id="skills" class="skills">
         <div class="container">
             <h2 class="section-title">Keahlian</h2>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>Teknologi</h3>
-                    <div class="skill-items">
-                        <span class="skill-item">Microsoft Excel</span>
-                        <span class="skill-item">Microsoft Word</span>
-                        <span class="skill-item">Visual Studio Code</span>
+            <div class="tech-badges">
+                <div class="tech-badge" title="Java">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
+                    <span>Java</span>
+                </div>
+                <div class="tech-badge" title="Python">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+                    <span>Python</span>
+                </div>
+                <div class="tech-badge" title="JavaScript">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
+                    <span>JavaScript</span>
+                </div>
+                <div class="tech-badge" title="HTML5">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5">
+                    <span>HTML5</span>
+                </div>
+                <div class="tech-badge" title="CSS3">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3">
+                    <span>CSS3</span>
+                </div>
+                <div class="tech-badge" title="MySQL">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL">
+                    <span>MySQL</span>
+                </div>
+                <div class="tech-badge" title="Git">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
+                    <span>Git</span>
+                </div>
+            </div>
+            <div class="skills-flow">
+                <div class="flow-step">
+                    <div class="step-marker">1</div>
+                    <div class="step-content">
+                        <h3>Konsep Dasar Pemrograman</h3>
+                        <p>Pelajari logika, tipe data, dan alur kendali (if/loop/function).</p>
                     </div>
                 </div>
-                <div class="skill-category">
-                    <h3>Pemrograman</h3>
-                    <div class="skill-items">
-                        <span class="skill-item">HTML</span>
-                        <span class="skill-item">CSS</span>
-                        <span class="skill-item">Java</span>
-                        <span class="skill-item">Algoritma Free Pascal</span>
-                        <span class="skill-item">Databases</span>
-                        <span class="skill-item">Implementasi Data</span>
-                        <span class="skill-item">Arsitektur Komputer</span>
+                <div class="flow-step">
+                    <div class="step-marker">2</div>
+                    <div class="step-content">
+                        <h3>Sintaks & Struktur</h3>
+                        <p>Memilih bahasa (mis. Python/Java/JavaScript), pelajari sintaks dan struktur dasar.</p>
                     </div>
                 </div>
-                <div class="skill-category">
-                    <h3>Bahasa</h3>
-                    <div class="skill-items">
-                        <span class="skill-item">Bahasa Arab (Menengah)</span>
-                        <span class="skill-item">Bahasa Inggris (Menengah)</span>
+                <div class="flow-step">
+                    <div class="step-marker">3</div>
+                    <div class="step-content">
+                        <h3>Fungsi & Modularisasi</h3>
+                        <p>Belajar menulis fungsi, modul, dan penggunaan pustaka.</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-marker">4</div>
+                    <div class="step-content">
+                        <h3>Struktur Data & Algoritma</h3>
+                        <p>Pahami array, list, stack, queue, tree, serta algoritma sorting/searching.</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-marker">5</div>
+                    <div class="step-content">
+                        <h3>Paradigma (OOP/Functional)</h3>
+                        <p>Pelajari OOP, design patterns, dan konsep functional programming.</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-marker">6</div>
+                    <div class="step-content">
+                        <h3>Proyek & Deployment</h3>
+                        <p>Bangun proyek nyata, versi kontrol (Git), testing, dan deployment.</p>
                     </div>
                 </div>
             </div>
@@ -178,10 +235,11 @@
                             <span>1-2 Hari Kerja</span>
                         </div>
                     </div>
-                    
+
                     <div class="download-cv">
                         <h4>Download Curriculum Vitae</h4>
-                        <a href="/home/ecaou/Documents/Muhammad Haikal Hafidz_CV.pdf" class="download-btn" download="Muhammad Haikal Hafidz_CV.pdf">
+                        <a href="cv/Muhammad Haikal Hafidz_CV.pdf" class="download-btn"
+                            download="Muhammad Haikal Hafidz_CV.pdf">
                             <i class="fas fa-download"></i>
                             <span>Download CV (PDF)</span>
                         </a>
@@ -190,7 +248,7 @@
                 </div>
                 <div class="contact-form">
                     <h3>Kirim Pesan</h3>
-                    <form action="contact.php" method="POST">
+                    <form action="php/contact.php" method="POST">
                         <div class="form-group">
                             <input type="text" name="name" placeholder="Nama Lengkap" required>
                         </div>
@@ -224,6 +282,7 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
 </body>
+
 </html>
