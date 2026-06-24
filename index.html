@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haikal Hafidz - Portofolio</title>
+    <title>Haikal Hafidz - Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style_snake_cube_patch.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,18 +21,19 @@
             <div class="preloader-name">Muhammad Haikal Hafidz</div>
         </div>
     </div>
+
     <header>
         <nav>
             <div class="logo">
                 <h2>Haikal Hafidz</h2>
             </div>
             <ul class="nav-links">
-                <li><a href="#home">Beranda</a></li>
-                <li><a href="#about">Tentang</a></li>
-                <li><a href="#education">Pendidikan</a></li>
-                <li><a href="#experience">Pengalaman</a></li>
-                <li><a href="#skills">Keahlian</a></li>
-                <li><a href="#contact">Kontak</a></li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
             <div class="burger">
                 <div class="line1"></div>
@@ -40,12 +43,22 @@
         </nav>
     </header>
 
-    <section id="home" class="hero">
+    <!-- Cube-like section transition carrier -->
+    <div class="cube-stage" aria-hidden="true">
+        <div class="cube-face cube-face--back"></div>
+        <div class="cube-face cube-face--right"></div>
+        <div class="cube-face cube-face--front"></div>
+        <div class="cube-face cube-face--left"></div>
+        <div class="cube-face cube-face--top"></div>
+        <div class="cube-face cube-face--bottom"></div>
+    </div>
+
+    <section id="home" class="hero cube-section">
         <div class="hero-content">
             <h1>Muhammad Haikal Hafidz</h1>
-            <p>Mahasiswa Teknik Informatika | Web Developer</p>
+            <p>Computer Science Student | Web Developer</p>
             <div class="cta-buttons">
-                <a href="#about" class="btn-primary">Tentang Saya</a>
+                <a href="#about" class="btn-primary">About Me</a>
                 <a href="#contact" class="btn-secondary">
                     <i class="fas fa-download"></i>
                     Download CV
@@ -60,81 +73,85 @@
         </div>
     </section>
 
-    <section id="about" class="about">
+    <section id="about" class="about cube-section">
         <div class="container">
-            <h2 class="section-title">Tentang Saya</h2>
+            <h2 class="section-title">About Me</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p>Muhammad Haikal Hafidz
-                        Mahasiswa Teknik Informatika yang berfokus pada pengembangan web dan pengolahan data. Memiliki
-                        kemampuan dalam Java, manajemen kelas, serta kolaborasi proyek.
-                        Aktif mencari peluang kerja paruh waktu untuk mengasah keterampilan teknis dan berkontribusi
-                        dalam lingkungan profesional.</p>
+                    <p>
+                        Muhammad Haikal Hafidz<br>
+                        A Computer Science student focused on web development and data processing. Skilled in Java,
+                        classroom management, and collaborative project work.
+                        Actively looking for a part-time opportunity to sharpen technical skills and contribute in a
+                        professional environment.
+                    </p>
                 </div>
                 <div class="contact-info">
-                    <h3>Informasi Kontak</h3>
-                    <p><i class="fas fa-phone"></i> nomor telp:<br>0895433210605</p>
+                    <h3>Contact Information</h3>
+                    <p><i class="fas fa-phone"></i> Phone:<br>0895433210605</p>
                     <p><i class="fas fa-envelope"></i> haikalhafidz015@gmail.com</p>
-                    <p><i class="fas fa-map-marker-alt"></i> JL. Masjid Al Fairi, Pasar Minggu, Jakarta Selatan</p>
+                    <p><i class="fas fa-map-marker-alt"></i> JL. Masjid Al Fairi, Pasar Minggu, South Jakarta</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="education" class="education">
+    <section id="education" class="education cube-section">
         <div class="container">
-            <h2 class="section-title">Pendidikan</h2>
+            <h2 class="section-title">Education</h2>
             <div class="timeline">
                 <div class="timeline-item">
-                    <div class="timeline-date">Juni 2020</div>
+                    <div class="timeline-date">June 2020</div>
                     <div class="timeline-content">
                         <h3>Pondok Pesantren Daarul Rahman, Bogor</h3>
-                        <p>Madrasah Tsanawiyah/ SMP</p>
-                        <p>Predikat: 7,00</p>
+                        <p>Junior High School (SMP) / Tsanawiyah</p>
+                        <p>Score: 7.00</p>
                     </div>
                 </div>
                 <div class="timeline-item">
-                    <div class="timeline-date">Juni 2023</div>
+                    <div class="timeline-date">June 2023</div>
                     <div class="timeline-content">
                         <h3>Pondok Pesantren Daarul Rahman, Jakarta</h3>
-                        <p>Muadalatul Ulya/ SMA</p>
-                        <p>Predikat: 8,38</p>
+                        <p>Senior High School (SMA) / Ulya</p>
+                        <p>Score: 8.38</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="experience" class="experience">
+    <section id="experience" class="experience cube-section">
         <div class="container">
-            <h2 class="section-title">Pengalaman</h2>
+            <h2 class="section-title">Experience</h2>
             <div class="experience-item">
                 <h3>Devotion Teacher</h3>
                 <p class="experience-period">2023 - 2024</p>
                 <p class="experience-location">Boarding School Ribathul Mujtaba | JL. Cipayung Kota Depok</p>
                 <ul>
-                    <li>Memiliki pengalaman dalam mengelola kelas dengan siswa serta membentuk organisasi ikatan pelajar
-                    </li>
-                    <li>Bekerja sama dengan Lembaga Baznas dengan memberikan dana untuk program-program Pendidikan</li>
+                    <li>Experience managing classrooms with students and forming a student association.</li>
+                    <li>Collaborated with the Baznas Foundation by providing funding for educational programs.</li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <section id="skills" class="skills">
+    <section id="skills" class="skills cube-section">
         <div class="container">
-            <h2 class="section-title">Keahlian</h2>
+            <h2 class="section-title">Skills</h2>
+
             <div class="tech-badges">
                 <div class="tech-badge" title="Java">
                     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
                     <span>Java</span>
                 </div>
                 <div class="tech-badge" title="Python">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+                        alt="Python">
                     <span>Python</span>
                 </div>
                 <div class="tech-badge" title="JavaScript">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+                        alt="JavaScript">
                     <span>JavaScript</span>
                 </div>
                 <div class="tech-badge" title="HTML5">
@@ -153,64 +170,51 @@
                     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
                     <span>Git</span>
                 </div>
-            </div>
-            <div class="skills-flow">
-                <div class="flow-step">
-                    <div class="step-marker">1</div>
-                    <div class="step-content">
-                        <h3>Konsep Dasar Pemrograman</h3>
-                        <p>Pelajari logika, tipe data, dan alur kendali (if/loop/function).</p>
-                    </div>
+
+                <div class="tech-badge" title="PHP">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP">
+                    <span>PHP</span>
                 </div>
-                <div class="flow-step">
-                    <div class="step-marker">2</div>
-                    <div class="step-content">
-                        <h3>Sintaks & Struktur</h3>
-                        <p>Memilih bahasa (mis. Python/Java/JavaScript), pelajari sintaks dan struktur dasar.</p>
-                    </div>
+                <div class="tech-badge" title="C">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" alt="C">
+                    <span>C</span>
                 </div>
-                <div class="flow-step">
-                    <div class="step-marker">3</div>
-                    <div class="step-content">
-                        <h3>Fungsi & Modularisasi</h3>
-                        <p>Belajar menulis fungsi, modul, dan penggunaan pustaka.</p>
-                    </div>
+                <div class="tech-badge" title="C++">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
+                        alt="C++">
+                    <span>C++</span>
                 </div>
-                <div class="flow-step">
-                    <div class="step-marker">4</div>
-                    <div class="step-content">
-                        <h3>Struktur Data & Algoritma</h3>
-                        <p>Pahami array, list, stack, queue, tree, serta algoritma sorting/searching.</p>
-                    </div>
+                <div class="tech-badge" title="TypeScript">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
+                        alt="TypeScript">
+                    <span>TypeScript</span>
                 </div>
-                <div class="flow-step">
-                    <div class="step-marker">5</div>
-                    <div class="step-content">
-                        <h3>Paradigma (OOP/Functional)</h3>
-                        <p>Pelajari OOP, design patterns, dan konsep functional programming.</p>
-                    </div>
+                <div class="tech-badge" title="Go">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" alt="Go">
+                    <span>Go</span>
                 </div>
-                <div class="flow-step">
-                    <div class="step-marker">6</div>
-                    <div class="step-content">
-                        <h3>Proyek & Deployment</h3>
-                        <p>Bangun proyek nyata, versi kontrol (Git), testing, dan deployment.</p>
-                    </div>
+                <div class="tech-badge" title="Rust">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg" alt="Rust">
+                    <span>Rust</span>
+                </div>
+                <div class="tech-badge" title="SQL">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL">
+                    <span>SQL</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="contact">
+    <section id="contact" class="contact cube-section">
         <div class="container">
-            <h2 class="section-title">Hubungi Saya</h2>
+            <h2 class="section-title">Contact</h2>
             <div class="contact-content">
                 <div class="contact-info">
-                    <h3>Informasi Kontak</h3>
+                    <h3>Contact Information</h3>
                     <div class="contact-item" onclick="openWhatApp()">
                         <i class="fas fa-phone"></i>
                         <div>
-                            <p>Telepon</p>
+                            <p>Phone</p>
                             <span>0895433210605</span>
                         </div>
                     </div>
@@ -224,15 +228,15 @@
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
                         <div>
-                            <p>Alamat</p>
-                            <span>JL. Masjid Al Fairi, Pasar Minggu, Jakarta Selatan</span>
+                            <p>Address</p>
+                            <span>JL. Masjid Al Fairi, Pasar Minggu, South Jakarta</span>
                         </div>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-clock"></i>
                         <div>
-                            <p>Waktu Respons</p>
-                            <span>1-2 Hari Kerja</span>
+                            <p>Response Time</p>
+                            <span>1-2 Business Days</span>
                         </div>
                     </div>
 
@@ -246,24 +250,29 @@
                         <p class="file-size">File Size: 156 KB</p>
                     </div>
                 </div>
+
                 <div class="contact-form">
-                    <h3>Kirim Pesan</h3>
+                    <h3>Send a Message</h3>
                     <form action="php/contact.php" method="POST">
+                        <!-- Honeypot anti-spam (diisi bot, dibiarkan kosong oleh user) -->
+                        <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off"
+                            value="">
+                        <!-- CSRF token sederhana berbasis halaman (opsional) -->
                         <div class="form-group">
-                            <input type="text" name="name" placeholder="Nama Lengkap" required>
+                            <input type="text" name="name" placeholder="Full Name" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" name="email" placeholder="Alamat Email" required>
+                            <input type="email" name="email" placeholder="Email Address" required>
                         </div>
                         <div class="form-group">
-                            <input type="text" name="subject" placeholder="Subjek Pesan" required>
+                            <input type="text" name="subject" placeholder="Message Subject" required>
                         </div>
                         <div class="form-group">
-                            <textarea name="message" placeholder="Pesan Anda" rows="5" required></textarea>
+                            <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
                         </div>
                         <button type="submit" class="btn-primary">
                             <i class="fas fa-paper-plane"></i>
-                            Kirim Pesan
+                            Send Message
                         </button>
                     </form>
                 </div>
@@ -273,9 +282,9 @@
 
     <footer>
         <div class="container">
-            <p>&copy; Haikal Hafidz. All rights reserved.</p>
+            <p>&copy; 2025 Haikal Hafidz. All rights reserved.</p>
             <div class="social-links">
-                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="https://www.linkedin.com/in/haikal-hafidz-554342419/"><i class="fab fa-linkedin"></i></a>
                 <a href="https://github.com/HaikalHafidz"><i class="fab fa-github"></i></a>
                 <a href="https://www.instagram.com/ecaou_?igsh=M3ZvNWV5bDlwejB3"><i class="fab fa-instagram"></i></a>
             </div>
