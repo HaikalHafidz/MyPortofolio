@@ -1348,8 +1348,9 @@ section {
     }
 }
 
-/* Skills Flow (pola sungai) */
+/* Skills Flow (pola sungai) - deprecated (replaced by snake coil) */
 .skills-flow {
+    display: none;
     position: relative;
     display: flex;
     flex-direction: column;
