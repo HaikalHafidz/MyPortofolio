@@ -47,6 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ssss", $name, $email, $subject, $message);
         
         if ($stmt->execute()) {
+            // Prepare email data
             $to = "haikalhafidz015@gmail.com";
             $email_subject = "Pesan Baru dari Portofolio: " . $subject;
             $email_body = "Anda menerima pesan baru dari portofolio Anda.\n\n" .
@@ -56,6 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                          "Pesan:\n$message\n\n" .
                          "Waktu: " . date('Y-m-d H:i:s');
 
+            // Attempt to use PHPMailer via Composer autoload if available
             $sent = false;
             $mailError = '';
 
@@ -64,11 +66,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 try {
                     $phpmailer = new PHPMailer\PHPMailer\PHPMailer(true);
 
-                    $useSMTP = true; 
+                    // SMTP configuration - update these with your SMTP provider
+                    $useSMTP = true; // set to false to use mail() fallback
                     $smtpHost = 'smtp.example.com';
                     $smtpUser = 'smtp_user@example.com';
                     $smtpPass = 'smtp_password';
-                    $smtpPort = 587;
+                    $smtpPort = 587; // 587 or 465 depending on provider
                     $smtpSecure = 'tls'; // 'tls' or 'ssl'
 
                     if ($useSMTP) {
@@ -79,6 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $phpmailer->Password = $smtpPass;
                         $phpmailer->SMTPSecure = $smtpSecure;
                         $phpmailer->Port = $smtpPort;
+                        // Optional: allow self-signed certs (for testing only)
                         $phpmailer->SMTPOptions = [
                             'ssl' => [
                                 'verify_peer' => false,
@@ -88,6 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         ];
                     }
 
+                    // From address (site) and Reply-To user
                     $fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
                     $fromEmail = 'noreply@' . preg_replace('/[^a-z0-9\.\-]/i', '', $fromDomain);
 
@@ -106,6 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
 
+            // If PHPMailer not available or failed, fallback to mail()
             if (!$sent) {
                 $fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
                 $fromEmail = 'noreply@' . preg_replace('/[^a-z0-9\.\-]/i', '', $fromDomain);
