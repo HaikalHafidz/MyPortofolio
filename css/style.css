@@ -1424,3 +1424,161 @@ section {
         height: 48px;
     }
 }
+
+/* ============================================================
+   Skills Orbit (menggantikan grid tech-badges lama)
+   Semua warna diambil dari variabel :root yang sudah ada;
+   --c per node hanya aksen kecil di border/ring badge, meniru
+   warna resmi tiap logo (seperti sebelumnya img devicon berwarna).
+   ============================================================ */
+.skills-lede {
+    text-align: center;
+    max-width: 620px;
+    margin: -2.5rem auto 3rem;
+    color: var(--dark-text);
+    font-size: 1rem;
+}
+
+.orbit-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0 10px;
+}
+
+.orbit {
+    position: relative;
+    width: min(620px, 92vw);
+    height: min(620px, 92vw);
+}
+
+.orbit__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px dashed var(--border-color);
+}
+
+.orbit__ring--outer {
+    animation: orbitSpin 70s linear infinite;
+}
+
+.orbit__ring--inner {
+    inset: 14%;
+    border-style: solid;
+    border-color: rgba(108, 99, 255, 0.25);
+}
+
+@keyframes orbitSpin {
+    to { transform: rotate(360deg); }
+}
+
+.orbit__hub {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 132px;
+    height: 132px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background-color: var(--dark-card);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 50px -12px rgba(108, 99, 255, 0.35);
+}
+
+.orbit__hub-title {
+    color: var(--primary-color);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-size: 0.95rem;
+}
+
+.orbit__hub-sub {
+    color: var(--dark-text);
+    opacity: 0.7;
+    font-size: 0.72rem;
+}
+
+.orbit__node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform: rotate(var(--angle)) translateX(min(280px, 44vw));
+}
+
+.orbit__badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(calc(-1 * var(--angle)));
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--dark-card);
+    border: 1.5px solid var(--c, var(--primary-color));
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    animation: orbitPulse 5.5s ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.orbit__badge img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+}
+
+.orbit__node:hover .orbit__badge {
+    transform: translate(-50%, -50%) rotate(calc(-1 * var(--angle))) scale(1.2);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+.orbit__step {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(calc(-1 * var(--angle))) translateY(-42px);
+    font-size: 0.68rem;
+    color: var(--dark-text);
+    opacity: 0.65;
+    font-weight: 600;
+}
+
+@keyframes orbitPulse {
+    0%, 100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 0 0 transparent; }
+    15% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 0 8px color-mix(in srgb, var(--c, var(--primary-color)) 20%, transparent); }
+    30% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 0 0 transparent; }
+}
+
+@media screen and (max-width: 640px) {
+    .orbit__badge {
+        width: 46px;
+        height: 46px;
+    }
+    .orbit__node {
+        transform: rotate(var(--angle)) translateX(min(160px, 38vw));
+    }
+    .orbit__step {
+        transform: translate(-50%, -50%) rotate(calc(-1 * var(--angle))) translateY(-34px);
+        font-size: 0.6rem;
+    }
+    .orbit__hub {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .orbit__ring--outer,
+    .orbit__badge {
+        animation: none;
+    }
+}
