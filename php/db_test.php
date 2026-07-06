@@ -1,24 +1,19 @@
 <?php
-// db_test.php
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', '1');
 
-$servername = "localhost";
-$username = "portfolio_user";
-$password = "password";
-$dbname = "portfolio_db";
+require_once __DIR__ . '/config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Koneksi database gagal: " . $conn->connect_error);
+try {
+    $conn = getDbConnection();
+} catch (RuntimeException $e) {
+    die('<p style="color:red;">' . htmlspecialchars($e->getMessage()) . '</p>');
 }
 
-echo "<h3>Database connection test</h3>";
-echo "<p>Berhasil terhubung ke database: <strong>$dbname</strong></p>";
+echo '<h3>Database connection test</h3>';
+echo '<p>Berhasil terhubung ke database: <strong>' . htmlspecialchars(DB_NAME) . '</strong></p>';
 
-// Periksa tabel utama yang ada
-$tables = ['contacts', 'donasi'];
+$tables = ['contacts'];
 
 foreach ($tables as $table) {
     $result = $conn->query("SHOW TABLES LIKE '$table'");
@@ -28,41 +23,39 @@ foreach ($tables as $table) {
         $countResult = $conn->query("SELECT COUNT(*) AS total FROM $table");
         if ($countResult) {
             $row = $countResult->fetch_assoc();
-            echo "<p>Jumlah baris di <strong>$table</strong>: " . $row['total'] . "</p>";
+            echo "<p>Jumlah baris di <strong>$table</strong>: " . $row['total'] . '</p>';
             $countResult->free();
         }
     } else {
-        echo "<p style='color:red;'>Tabel <strong>$table</strong> tidak ditemukan.</p>";
+        echo "<p style='color:red;'>Tabel <strong>$table</strong> tidak ditemukan. Jalankan schema.sql terlebih dahulu.</p>";
     }
     if ($result) {
         $result->free();
     }
 }
 
-// Tes query sederhana pada tabel donasi
-$donasiResult = $conn->query("SELECT id, kode_donasi, nama, jumlah, status FROM donasi ORDER BY id DESC LIMIT 3");
-if ($donasiResult) {
-    if ($donasiResult->num_rows > 0) {
-        echo "<h4>3 Data donasi terbaru</h4>";
+$recent = $conn->query('SELECT id, name, email, subject, created_at FROM contacts ORDER BY id DESC LIMIT 5');
+if ($recent) {
+    if ($recent->num_rows > 0) {
+        echo '<h4>5 pesan kontak terbaru</h4>';
         echo "<table border='1' cellpadding='8' cellspacing='0'>";
-        echo "<tr><th>ID</th><th>Kode</th><th>Nama</th><th>Jumlah</th><th>Status</th></tr>";
-        while ($row = $donasiResult->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . htmlspecialchars($row['id']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['kode_donasi']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['nama']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['jumlah']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-            echo "</tr>";
+        echo '<tr><th>ID</th><th>Nama</th><th>Email</th><th>Subjek</th><th>Waktu</th></tr>';
+        while ($row = $recent->fetch_assoc()) {
+            echo '<tr>';
+            echo '<td>' . htmlspecialchars($row['id']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['name']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['email']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['subject']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['created_at']) . '</td>';
+            echo '</tr>';
         }
-        echo "</table>";
+        echo '</table>';
     } else {
-        echo "<p>Tabel donasi kosong.</p>";
+        echo '<p>Tabel contacts masih kosong.</p>';
     }
-    $donasiResult->free();
+    $recent->free();
 } else {
-    echo "<p style='color:red;'>Query donasi gagal: " . $conn->error . "</p>";
+    echo '<p style="color:red;">Query gagal: ' . htmlspecialchars($conn->error) . '</p>';
 }
 
 $conn->close();
-?>
