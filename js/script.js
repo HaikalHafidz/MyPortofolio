@@ -40,7 +40,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 const contactForm = document.querySelector('.contact-form form');
 if (contactForm) {
-    contactForm.addEventListener('submit', function (e) {
+    contactForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
         const inputs = this.querySelectorAll('input, textarea');
         let isValid = true;
 
@@ -48,7 +50,7 @@ if (contactForm) {
         inputs.forEach(input => {
             if (!input.value.trim()) {
                 isValid = false;
-                showError(input, 'This field is required');
+                showError(input, 'Kolom ini wajib diisi');
             } else if (input.type === 'email' && !isValidEmail(input.value)) {
                 isValid = false;
                 showError(input, 'Format email tidak valid');
@@ -57,17 +59,50 @@ if (contactForm) {
             }
         });
 
-        if (isValid) {
-            const submitBtn = this.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                submitBtn.disabled = true;
-            }
-        } else {
-            e.preventDefault();
-            showNotification('Please fix the errors in the form.', 'error');
+        if (!isValid) {
+            showNotification('Periksa kembali isian formulir Anda.', 'error');
+            return;
         }
 
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            submitBtn.disabled = true;
+        }
+
+        try {
+            const formData = new FormData(this);
+            const response = await fetch(this.getAttribute('action') || 'php/contact.php', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: formData
+            });
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (parseErr) {
+                throw new Error('Respons server tidak valid.');
+            }
+
+            if (data.success) {
+                showNotification(data.message, 'success');
+                this.reset();
+            } else {
+                showNotification(data.message || 'Pesan gagal dikirim. Silakan coba lagi.', 'error');
+            }
+        } catch (err) {
+            showNotification(
+                'Tidak bisa terhubung ke server. Pastikan server PHP & database aktif, atau hubungi saya langsung via WhatsApp/Email.',
+                'error'
+            );
+        } finally {
+            if (submitBtn) {
+                submitBtn.innerHTML = originalBtnHtml;
+                submitBtn.disabled = false;
+            }
+        }
     });
 }
 
