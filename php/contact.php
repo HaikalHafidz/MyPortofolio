@@ -1,19 +1,45 @@
 <?php
 session_start();
+require_once __DIR__ . '/config.php';
 
-$servername = "localhost";
-$username = "portfolio_user";
-$password = "password";
-$dbname = "portfolio_db";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    $_SESSION['errors'] = ["Koneksi database gagal. Silakan coba lagi nanti."];
-    header("Location: ../index.html#contact");
-    exit();
+function isAjaxRequest(): bool
+{
+    return (
+        (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+        || (!empty($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json'))
+    );
 }
 
+function respond(bool $success, string $message, int $httpCode = 200): void
+{
+    if (isAjaxRequest()) {
+        http_response_code($httpCode);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => $success, 'message' => $message]);
+        exit;
+    }
+
+    // Fallback untuk browser tanpa JavaScript
+    if ($success) {
+        header('Location: ../contact_success.html');
+    } else {
+        $_SESSION['errors'] = [$message];
+        header('Location: ../index.html#contact');
+    }
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    respond(false, 'Metode tidak diizinkan.', 405);
+}
+
+try {
+    $conn = getDbConnection();
+} catch (RuntimeException $e) {
+    respond(false, 'Koneksi database gagal. Pastikan database "portfolio_db" sudah dibuat (lihat schema.sql) dan kredensial di php/config.php sudah benar.', 500);
+}
+
+// Rate limiting sederhana berbasis sesi (maks 5 pesan / 10 menit)
 if (!isset($_SESSION['contact_window_start'])) {
     $_SESSION['contact_window_start'] = time();
     $_SESSION['contact_count_window'] = 0;
@@ -29,137 +55,98 @@ if (($now - $_SESSION['contact_window_start']) > $windowSeconds) {
 }
 
 if ($_SESSION['contact_count_window'] >= $maxRequests) {
-    $_SESSION['errors'] = ["Terlalu banyak percobaan. Coba lagi nanti." ];
-    header("Location: ../index.html#contact");
-    exit();
+    respond(false, 'Terlalu banyak percobaan. Coba lagi dalam beberapa menit.', 429);
 }
 
-// Catat request
 $_SESSION['contact_count_window']++;
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Honeypot anti-spam (input ini harus kosong)
-    $honeypot = trim($_POST['website'] ?? '');
-    if (!empty($honeypot)) {
-        $_SESSION['errors'] = ["Permintaan ditolak (terindikasi spam)."];
-        header("Location: ../index.html#contact");
-        exit();
-    }
+// Honeypot anti-spam (input ini harus kosong)
+$honeypot = trim($_POST['website'] ?? '');
+if ($honeypot !== '') {
+    respond(false, 'Permintaan ditolak.', 400);
+}
 
-    $name = htmlspecialchars(trim($_POST['name'] ?? ''), ENT_QUOTES, 'UTF-8');
-    $email = htmlspecialchars(trim($_POST['email'] ?? ''), ENT_QUOTES, 'UTF-8');
-    $subject = htmlspecialchars(trim($_POST['subject'] ?? ''), ENT_QUOTES, 'UTF-8');
-    $message = htmlspecialchars(trim($_POST['message'] ?? ''), ENT_QUOTES, 'UTF-8');
+$name    = trim($_POST['name'] ?? '');
+$email   = trim($_POST['email'] ?? '');
+$subject = trim($_POST['subject'] ?? '');
+$message = trim($_POST['message'] ?? '');
 
-    $errors = [];
+$errors = [];
+if ($name === '' || mb_strlen($name) > 100) {
+    $errors[] = 'Nama wajib diisi (maks. 100 karakter).';
+}
+if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors[] = 'Email tidak valid.';
+}
+if ($subject === '' || mb_strlen($subject) > 150) {
+    $errors[] = 'Subjek wajib diisi (maks. 150 karakter).';
+}
+if ($message === '' || mb_strlen($message) > 3000) {
+    $errors[] = 'Pesan wajib diisi (maks. 3000 karakter).';
+}
 
-    if ($name === '') {
-        $errors[] = "Nama harus diisi";
-    }
+if (!empty($errors)) {
+    respond(false, implode(' ', $errors), 422);
+}
 
-    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Email harus valid";
-    }
+$stmt = $conn->prepare(
+    'INSERT INTO contacts (name, email, subject, message, created_at) VALUES (?, ?, ?, ?, NOW())'
+);
+$stmt->bind_param('ssss', $name, $email, $subject, $message);
 
-    if ($subject === '') {
-        $errors[] = "Subjek harus diisi";
-    }
+if (!$stmt->execute()) {
+    respond(false, 'Gagal menyimpan pesan. Silakan coba lagi.', 500);
+}
 
-    if ($message === '') {
-        $errors[] = "Pesan harus diisi";
-    }
+$stmt->close();
+$to = 'haikalhafidz015@gmail.com';
+$emailSubject = 'Pesan Baru dari Portofolio: ' . $subject;
+$emailBody = "Anda menerima pesan baru dari portofolio Anda.\n\n"
+    . "Nama: {$name}\n"
+    . "Email: {$email}\n"
+    . "Subjek: {$subject}\n"
+    . "Pesan:\n{$message}\n\n"
+    . 'Waktu: ' . date('Y-m-d H:i:s');
 
-    if (!empty($errors)) {
-        $_SESSION['errors'] = $errors;
-        $_SESSION['form_data'] = $_POST;
-        header("Location: ../index.html#contact");
-        exit();
-    }
+$sent = false;
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+    try {
+        $mailer = new PHPMailer\PHPMailer\PHPMailer(true);
+        $mailer->isSMTP();
+        $mailer->Host = 'smtp.example.com';
+        $mailer->SMTPAuth = true;
+        $mailer->Username = 'smtp_user@example.com';
+        $mailer->Password = 'smtp_password';
+        $mailer->SMTPSecure = 'tls';
+        $mailer->Port = 587;
 
-    $sql = "INSERT INTO contacts (name, email, subject, message, created_at) 
-            VALUES (?, ?, ?, ?, NOW())";
+        $fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
+        $fromEmail = 'noreply@' . preg_replace('/[^a-z0-9.\-]/i', '', $fromDomain);
 
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssss", $name, $email, $subject, $message);
+        $mailer->setFrom($fromEmail, 'Portfolio Contact');
+        $mailer->addAddress($to);
+        $mailer->addReplyTo($email, $name);
+        $mailer->Subject = $emailSubject;
+        $mailer->Body = $emailBody;
+        $mailer->isHTML(false);
 
-    if ($stmt->execute()) {
-        $to = "haikalhafidz015@gmail.com";
-        $email_subject = "Pesan Baru dari Portofolio: " . $subject;
-        $email_body = "Anda menerima pesan baru dari portofolio Anda.\n\n" .
-            "Nama: {$name}\n" .
-            "Email: {$email}\n" .
-            "Subjek: {$subject}\n" .
-            "Pesan:\n{$message}\n\n" .
-            "Waktu: " . date('Y-m-d H:i:s');
-
+        $sent = $mailer->send();
+    } catch (Exception $e) {
         $sent = false;
-        if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-            require __DIR__ . '/vendor/autoload.php';
-            try {
-                $phpmailer = new PHPMailer\\PHPMailer\\PHPMailer(true);
-
-                $useSMTP = true; 
-                $smtpHost = 'smtp.example.com';
-                $smtpUser = 'smtp_user@example.com';
-                $smtpPass = 'smtp_password';
-                $smtpPort = 587;
-                $smtpSecure = 'tls'; 
-
-                if ($useSMTP) {
-                    $phpmailer->isSMTP();
-                    $phpmailer->Host = $smtpHost;
-                    $phpmailer->SMTPAuth = true;
-                    $phpmailer->Username = $smtpUser;
-                    $phpmailer->Password = $smtpPass;
-                    $phpmailer->SMTPSecure = $smtpSecure;
-                    $phpmailer->Port = $smtpPort;
-
-                    $phpmailer->SMTPOptions = [
-                        'ssl' => [
-                            'verify_peer' => false,
-                            'verify_peer_name' => false,
-                            'allow_self_signed' => true
-                        ]
-                    ];
-                }
-
-                $fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
-                $fromEmail = 'noreply@' . preg_replace('/[^a-z0-9\\.\\-]/i', '', $fromDomain);
-
-                $phpmailer->setFrom($fromEmail, 'Portfolio Contact');
-                $phpmailer->addAddress($to);
-                $phpmailer->addReplyTo($email, $name);
-
-                $phpmailer->Subject = $email_subject;
-                $phpmailer->Body = $email_body;
-                $phpmailer->isHTML(false);
-
-                $sent = $phpmailer->send();
-            } catch (Exception $e) {
-                $sent = false;
-            }
-        }
-
-        if (!$sent) {
-            $fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
-            $fromEmail = 'noreply@' . preg_replace('/[^a-z0-9\\.\\-]/i', '', $fromDomain);
-            $headers = "From: \"Portfolio Contact\" <{$fromEmail}>\r\n";
-            $headers .= "Reply-To: {$email}\r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
-
-            @mail($to, $email_subject, $email_body, $headers);
-        }
-
-        header("Location: ../contact_success.html");
-        exit();
     }
+}
 
-    $_SESSION['errors'] = ["Terjadi kesalahan. Silakan coba lagi."];
-    $_SESSION['form_data'] = $_POST;
-    header("Location: ../index.html#contact");
-    exit();
+if (!$sent) {
+    $fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
+    $fromEmail = 'noreply@' . preg_replace('/[^a-z0-9.\-]/i', '', $fromDomain);
+    $headers = "From: \"Portfolio Contact\" <{$fromEmail}>\r\n";
+    $headers .= "Reply-To: {$email}\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+    @mail($to, $emailSubject, $emailBody, $headers);
 }
 
 $conn->close();
-?>
+
+respond(true, "Terima kasih, {$name}! Pesan Anda sudah tersimpan dan akan segera dibalas.");
