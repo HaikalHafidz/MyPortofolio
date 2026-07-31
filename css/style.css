@@ -527,7 +527,6 @@ section {
     flex: 0 0 320px;
     display: block;
     text-decoration: none;
-    line-height: 0;
 }
 
 .experience-item__image {
@@ -1363,7 +1362,406 @@ section {
     box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
 }
 
-/* Tech Badges (logo pemrograman melingkar) */
+/* ============================================================
+   Team Page Styles
+   ============================================================ */
+.team-header {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 50%, #16213e 100%);
+    padding: 8rem 0 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.team-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(108, 99, 255, 0.08) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+}
+
+.team-header__project-badge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: white;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.team-header h1 {
+    font-size: 3rem;
+    color: var(--light-text);
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(135deg, var(--light-text), var(--primary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.team-header p {
+    font-size: 1.2rem;
+    color: var(--dark-text);
+    max-width: 600px;
+    margin: 0 auto 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.team-header__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 1rem;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s;
+}
+
+.team-header__link:hover {
+    color: var(--secondary-color);
+}
+
+.team-poster {
+    padding: 4rem 0;
+    background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
+}
+
+.team-poster__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.team-card {
+    background: var(--dark-card);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+
+.team-card:hover::before {
+    transform: scaleX(1);
+}
+
+.team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border-color: rgba(108, 99, 255, 0.3);
+}
+
+.team-card__avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: white;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
+    position: relative;
+}
+
+.team-card__avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.team-card__role {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    background: rgba(108, 99, 255, 0.15);
+    color: var(--primary-color);
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    border: 1px solid rgba(108, 99, 255, 0.2);
+}
+
+.team-card__name {
+    font-size: 1.3rem;
+    color: var(--light-text);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.team-card__desc {
+    font-size: 0.9rem;
+    color: var(--dark-text);
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+}
+
+.team-card__social {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.team-card__social a {
+    color: var(--dark-text);
+    font-size: 1.2rem;
+    transition: all 0.3s;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.team-card__social a:hover {
+    color: var(--primary-color);
+    background: rgba(108, 99, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Team Project Stats */
+.team-stats {
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, var(--dark-bg) 100%);
+}
+
+.team-stats__inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
+
+.team-stats__progress {
+    flex: 0 0 auto;
+}
+
+.team-stats__info {
+    flex: 1;
+    min-width: 250px;
+}
+
+.team-stats__info h3 {
+    color: var(--light-text);
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.team-stats__info p {
+    color: var(--dark-text);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 0.5rem;
+}
+
+.team-stats__info ul {
+    list-style: none;
+    margin-top: 1rem;
+}
+
+.team-stats__info li {
+    margin-bottom: 0.6rem;
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--dark-text);
+}
+
+.team-stats__info li::before {
+    content: '▸';
+    color: var(--primary-color);
+    position: absolute;
+    left: 0;
+}
+
+/* Team CTA */
+.team-cta {
+    text-align: center;
+    padding: 3rem 2rem 5rem;
+    background: var(--dark-bg);
+}
+
+.team-cta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1.2rem 2.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+    box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
+}
+
+.team-cta a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(108, 99, 255, 0.4);
+}
+
+/* Team responsive */
+@media (max-width: 768px) {
+    .team-header {
+        padding: 7rem 1rem 2rem;
+    }
+    .team-header h1 {
+        font-size: 2.2rem;
+    }
+    .team-poster__grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+    }
+    .team-stats__inner {
+        flex-direction: column;
+        text-align: center;
+    }
+    .team-stats__info ul {
+        text-align: left;
+    }
+}
+
+/* Circular Progress Bars for Experience */
+.progress-circle-wrap {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.8rem;
+    flex-wrap: wrap;
+}
+
+.progress-circle {
+    --size: 110px;
+    --stroke-width: 7px;
+    width: var(--size);
+    height: var(--size);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-circle__svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.progress-circle__bg {
+    fill: none;
+    stroke: var(--border-color);
+    stroke-width: var(--stroke-width);
+}
+
+.progress-circle__fill {
+    fill: none;
+    stroke: url(#progressGradient);
+    stroke-width: var(--stroke-width);
+    stroke-linecap: round;
+    stroke-dasharray: 282.74;
+    stroke-dashoffset: calc(282.74 * (1 - var(--progress) / 100));
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-circle__text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--light-text);
+    line-height: 1;
+}
+
+.progress-circle__label {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--dark-text);
+    text-align: center;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+/* Inline SVG gradient definition placeholder -- injected via HTML */
+/* Variant: standalone circle (no label below) used inside experience items */
+.experience-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: var(--dark-card);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.experience-progress .progress-circle {
+    --size: 130px;
+    --stroke-width: 9px;
+}
+
+.experience-progress .progress-circle__text {
+    font-size: 1.8rem;
+}
+
+.experience-progress .progress-circle__label {
+    font-size: 0.9rem;
+    opacity: 1;
+    color: var(--light-text);
+}
+
+@keyframes progressAppear {
+    from {
+        stroke-dashoffset: 282.74;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
 .tech-badges {
     display: flex;
     flex-wrap: wrap;
