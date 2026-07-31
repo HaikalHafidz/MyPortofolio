@@ -511,6 +511,72 @@ section {
     font-size: 1.2rem;
 }
 
+.experience-item + .experience-item {
+    margin-top: 2.5rem;
+}
+
+.experience-item--with-image {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2.5rem;
+    padding: 2rem;
+}
+
+.experience-item--with-image > a {
+    flex: 0 0 320px;
+    display: block;
+    text-decoration: none;
+    line-height: 0;
+}
+
+.experience-item__image {
+    width: 100%;
+}
+
+.experience-item__image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.experience-item__content {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 768px) {
+    .experience-item--with-image {
+        flex-direction: column;
+        padding: 1.5rem;
+    }
+
+    .experience-item--with-image > a {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto 1rem;
+    }
+
+    .experience-item__content {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .experience-item--with-image {
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+
+    .experience-item--with-image > a {
+        max-width: 100%;
+    }
+}
+
 /* Skills Section */
 .skills {
     background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
