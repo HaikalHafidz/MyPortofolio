@@ -29,6 +29,35 @@ function respond(bool $success, string $message, int $httpCode = 200): void
     exit;
 }
 
+/**
+ * Kirim notifikasi WhatsApp lewat CallMeBot.
+ * Gagal diam-diam (tidak menggagalkan submit form) supaya pesan tetap
+ * tersimpan & email tetap dicoba terkirim walau WA gagal.
+ */
+function sendWhatsAppNotification(string $message): bool
+{
+    if (
+        !defined('WA_PHONE') || !defined('WA_APIKEY')
+        || WA_PHONE === '' || WA_APIKEY === '' || WA_APIKEY === 'YOUR_CALLMEBOT_APIKEY'
+    ) {
+        return false;
+    }
+
+    $url = 'https://api.callmebot.com/whatsapp.php'
+        . '?phone=' . urlencode(WA_PHONE)
+        . '&text=' . urlencode($message)
+        . '&apikey=' . urlencode(WA_APIKEY);
+
+    $context = stream_context_create(['http' => ['timeout' => 5]]);
+
+    try {
+        $result = @file_get_contents($url, false, $context);
+        return $result !== false;
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     respond(false, 'Metode tidak diizinkan.', 405);
 }
@@ -99,6 +128,9 @@ if (!$stmt->execute()) {
 }
 
 $stmt->close();
+$conn->close();
+
+// ==== Kirim Email (pakai mail() bawaan server/hosting) ====
 $to = 'haikalhafidz015@gmail.com';
 $emailSubject = 'Pesan Baru dari Portofolio: ' . $subject;
 $emailBody = "Anda menerima pesan baru dari portofolio Anda.\n\n"
@@ -108,45 +140,25 @@ $emailBody = "Anda menerima pesan baru dari portofolio Anda.\n\n"
     . "Pesan:\n{$message}\n\n"
     . 'Waktu: ' . date('Y-m-d H:i:s');
 
-$sent = false;
-if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    require_once __DIR__ . '/vendor/autoload.php';
-    try {
-        $mailer = new PHPMailer\PHPMailer\PHPMailer(true);
-        $mailer->isSMTP();
-        $mailer->Host = 'smtp.example.com';
-        $mailer->SMTPAuth = true;
-        $mailer->Username = 'smtp_user@example.com';
-        $mailer->Password = 'smtp_password';
-        $mailer->SMTPSecure = 'tls';
-        $mailer->Port = 587;
+$fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
+$fromEmail = 'noreply@' . preg_replace('/[^a-z0-9.\-]/i', '', $fromDomain);
 
-        $fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
-        $fromEmail = 'noreply@' . preg_replace('/[^a-z0-9.\-]/i', '', $fromDomain);
+$headers = "From: \"Portfolio Contact\" <{$fromEmail}>\r\n";
+$headers .= "Reply-To: {$email}\r\n";
+$headers .= "MIME-Version: 1.0\r\n";
+$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
 
-        $mailer->setFrom($fromEmail, 'Portfolio Contact');
-        $mailer->addAddress($to);
-        $mailer->addReplyTo($email, $name);
-        $mailer->Subject = $emailSubject;
-        $mailer->Body = $emailBody;
-        $mailer->isHTML(false);
+$emailSent = @mail($to, $emailSubject, $emailBody, $headers);
 
-        $sent = $mailer->send();
-    } catch (Exception $e) {
-        $sent = false;
-    }
-}
+// ==== Kirim Notifikasi WhatsApp (via CallMeBot) ====
+$waMessage = "📩 Pesan baru dari Portofolio!\n"
+    . "Nama: {$name}\n"
+    . "Email: {$email}\n"
+    . "Subjek: {$subject}\n"
+    . "Pesan: {$message}";
 
-if (!$sent) {
-    $fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
-    $fromEmail = 'noreply@' . preg_replace('/[^a-z0-9.\-]/i', '', $fromDomain);
-    $headers = "From: \"Portfolio Contact\" <{$fromEmail}>\r\n";
-    $headers .= "Reply-To: {$email}\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
-    @mail($to, $emailSubject, $emailBody, $headers);
-}
+$waSent = sendWhatsAppNotification($waMessage);
 
-$conn->close();
-
+// Pesan tetap dianggap berhasil karena SUDAH TERSIMPAN di database,
+// walaupun email/WA gagal terkirim (misalnya server belum mendukung mail()).
 respond(true, "Terima kasih, {$name}! Pesan Anda sudah tersimpan dan akan segera dibalas.");
