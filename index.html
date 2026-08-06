@@ -7,7 +7,7 @@
     <title>Haikal Hafidz - Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -122,52 +122,76 @@
         <div class="container">
             <h2 class="section-title">Experience</h2>
 
-            <div class="experience-item experience-item--with-image">
-                <a href="https://haikalhafidz.github.io/numeric-calculator/" target="_blank" rel="noopener noreferrer">
-                    <div class="experience-item__image">
-                        <img src="img/experience-unindra.png" alt="Web Developer Universitas Indraprasta PGRI">
-                    </div>
-                </a>
-                <div class="experience-item__content">
-                    <h3>Web Developer</h3>
-                    <p class="experience-period">2025 - Present</p>
-                    <p class="experience-location">Universitas Indraprasta PGRI</p>
-                    <ul>
-                        <li>Developed and maintained web-based applications for Universitas Indraprasta PGRI.</li>
-                        <li>Collaborated with team members to design and implement new features.</li>
-                        <li>Optimized website performance by implementing responsive design principles, ensuring
-                            cross-device compatibility for both laptop and mobile users.</li>
+            <div class="experience-scroll" id="experienceScroll">
+            <div class="experience-track" id="experienceTrack">
+
+            <article class="poster-card">
+                <div class="poster-card__frame">
+                    <a class="poster-card__media-link" href="https://haikalhafidz.github.io/numeric-calculator/"
+                        target="_blank" rel="noopener noreferrer"
+                        aria-label="Web Developer Universitas Indraprasta PGRI">
+                        <img class="poster-card__img" src="img/experience-unindra.png"
+                            alt="Web Developer Universitas Indraprasta PGRI">
+                        <span class="poster-card__shine" aria-hidden="true"></span>
+                    </a>
+                    <a class="poster-card__team-link poster-card__team-link--floating" href="team.html"
+                        target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-users"></i> Collaborators &amp; Team
+                    </a>
+                    <span class="poster-card__period">2025 — Present</span>
+                    <span class="poster-card__gradient">
+                        <span class="poster-card__eyebrow">Web Developer</span>
+                        <span class="poster-card__title">Universitas Indraprasta PGRI</span>
+                    </span>
+                </div>
+                <div class="poster-card__body">
+                    <ul class="poster-card__list">
+                        <li>Developed &amp; maintained web-based applications for the university.</li>
+                        <li>Collaborated with the team to design and implement new features.</li>
+                        <li>Optimized performance with responsive, cross-device design.</li>
                     </ul>
                 </div>
-            </div>
+            </article>
 
-            <div class="experience-item">
-                <h3>Devotion Teacher</h3>
-                <p class="experience-period">2023 - 2024</p>
-                <p class="experience-location">Boarding School Ribathul Mujtaba | JL. Cipayung Kota Depok</p>
-                <ul>
-                    <li>Experience managing classrooms with students and forming a student association.</li>
-                    <li>Collaborated with the Baznas Foundation by providing funding for educational programs.</li>
-                </ul>
-            </div>
-
-            <div class="experience-item experience-item--with-image">
-                <a href="https://haikalhafidz.github.io/Vidioon/" target="_blank" rel="noopener noreferrer">
-                    <div class="experience-item__image">
-                        <img src="img/experience-vidioon.png" alt="Web Developer Vidioon">
-                    </div>
-                </a>
-                <div class="experience-item__content">
-                    <h3>Web Developer</h3>
-                        <p class="experience-location">Collaborators & Teams</p>
-                    <ul>
-                        <li>Developed a web-based application for film reviews and ratings.</li>
-                        <li>Implemented user authentication and authorization features to ensure secure access to the
-                            application.</li>
-                        <li>Collaborated with a team of developers to design and implement new features, resulting in a
-                            more user-friendly experience.</li>
+            <article class="poster-card">
+                <div class="poster-card__frame poster-card__frame--placeholder">
+                    <i class="fas fa-chalkboard-teacher poster-card__watermark" aria-hidden="true"></i>
+                    <span class="poster-card__shine" aria-hidden="true"></span>
+                    <span class="poster-card__period">2023 — 2024</span>
+                    <span class="poster-card__gradient">
+                        <span class="poster-card__eyebrow">Devotion Teacher</span>
+                        <span class="poster-card__title">Ribathul Mujtaba</span>
+                    </span>
+                </div>
+                <div class="poster-card__body">
+                    <p class="poster-card__meta"><i class="fas fa-map-marker-alt"></i> JL. Cipayung, Kota Depok</p>
+                    <ul class="poster-card__list">
+                        <li>Managed classrooms and helped form a student association.</li>
+                        <li>Collaborated with the Baznas Foundation on funding for educational programs.</li>
                     </ul>
                 </div>
+            </article>
+
+            <article class="poster-card">
+                <a class="poster-card__frame" href="https://haikalhafidz.github.io/Vidioon/" target="_blank"
+                    rel="noopener noreferrer">
+                    <img class="poster-card__img" src="img/experience-vidioon.png" alt="Web Developer Vidioon">
+                    <span class="poster-card__shine" aria-hidden="true"></span>
+                    <span class="poster-card__gradient">
+                        <span class="poster-card__eyebrow">Web Developer</span>
+                        <span class="poster-card__title">Vidioon</span>
+                    </span>
+                </a>
+                <div class="poster-card__body">
+                    <ul class="poster-card__list">
+                        <li>Built a web app for film reviews &amp; ratings.</li>
+                        <li>Implemented secure user authentication &amp; authorization.</li>
+                        <li>Collaborated with developers on new, user-friendly features.</li>
+                    </ul>
+                </div>
+            </article>
+
+            </div>
             </div>
         </div>
     </section>
