@@ -464,6 +464,111 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// Infinite horizontal scroll for the Experience section (drag/swipe + autoplay, loops both directions)
+(function initExperienceInfiniteScroll() {
+    const scrollWrap = document.getElementById('experienceScroll');
+    const track = document.getElementById('experienceTrack');
+    if (!scrollWrap || !track) return;
+
+    const originalItems = Array.from(track.children);
+    if (originalItems.length === 0) return;
+
+    // Build 3 copies back-to-back: [A][A][A] so we can loop seamlessly either direction
+    for (let i = 0; i < 2; i++) {
+        originalItems.forEach(item => track.appendChild(item.cloneNode(true)));
+    }
+
+    let setWidth = 0;
+    let isPointerDown = false;
+    let isDragging = false;
+    let isHovering = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+    const AUTOPLAY_SPEED = 0.5; // px per frame
+
+    function measure() {
+        setWidth = track.scrollWidth / 3;
+    }
+
+    function centerScroll() {
+        if (setWidth) scrollWrap.scrollLeft = setWidth;
+    }
+
+    function settle() {
+        measure();
+        centerScroll();
+    }
+
+    settle();
+    window.addEventListener('load', settle);
+
+    function loopCheck() {
+        if (!setWidth) return;
+        if (scrollWrap.scrollLeft <= 0) {
+            scrollWrap.scrollLeft += setWidth;
+        } else if (scrollWrap.scrollLeft >= setWidth * 2) {
+            scrollWrap.scrollLeft -= setWidth;
+        }
+    }
+
+    function getX(e) {
+        return e.touches ? e.touches[0].clientX : e.clientX;
+    }
+
+    function onPointerDown(e) {
+        isPointerDown = true;
+        isDragging = false;
+        scrollWrap.classList.add('dragging');
+        startX = getX(e);
+        startScrollLeft = scrollWrap.scrollLeft;
+    }
+
+    function onPointerMove(e) {
+        if (!isPointerDown) return;
+        const dx = getX(e) - startX;
+        if (Math.abs(dx) > 3) isDragging = true;
+        scrollWrap.scrollLeft = startScrollLeft - dx;
+        if (e.cancelable) e.preventDefault();
+    }
+
+    function onPointerUp() {
+        isPointerDown = false;
+        scrollWrap.classList.remove('dragging');
+    }
+
+    scrollWrap.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+    scrollWrap.addEventListener('touchstart', onPointerDown, { passive: true });
+    scrollWrap.addEventListener('touchmove', onPointerMove, { passive: false });
+    scrollWrap.addEventListener('touchend', onPointerUp);
+    scrollWrap.addEventListener('mouseenter', () => { isHovering = true; });
+    scrollWrap.addEventListener('mouseleave', () => { isHovering = false; });
+    scrollWrap.addEventListener('scroll', loopCheck, { passive: true });
+
+    // Stop an accidental link-navigation right after a drag
+    scrollWrap.addEventListener('click', (e) => {
+        if (isDragging) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, true);
+
+    window.addEventListener('resize', () => {
+        const ratio = setWidth ? scrollWrap.scrollLeft / setWidth : 1;
+        measure();
+        scrollWrap.scrollLeft = setWidth * ratio;
+    });
+
+    function autoplayTick() {
+        if (!isPointerDown && !isHovering && setWidth) {
+            scrollWrap.scrollLeft += AUTOPLAY_SPEED;
+        }
+        requestAnimationFrame(autoplayTick);
+    }
+    requestAnimationFrame(autoplayTick);
+})();
+
 // Open WhatsApp chat (used by contact item)
 function openWhatApp() {
     const number = '62895433210605';
