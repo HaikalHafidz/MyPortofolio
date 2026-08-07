@@ -19,7 +19,6 @@ function respond(bool $success, string $message, int $httpCode = 200): void
         exit;
     }
 
-    // Fallback untuk browser tanpa JavaScript
     if ($success) {
         header('Location: ../contact_success.html');
     } else {
@@ -29,11 +28,6 @@ function respond(bool $success, string $message, int $httpCode = 200): void
     exit;
 }
 
-/**
- * Kirim notifikasi WhatsApp lewat CallMeBot.
- * Gagal diam-diam (tidak menggagalkan submit form) supaya pesan tetap
- * tersimpan & email tetap dicoba terkirim walau WA gagal.
- */
 function sendWhatsAppNotification(string $message): bool
 {
     if (
@@ -68,7 +62,6 @@ try {
     respond(false, 'Koneksi database gagal. Pastikan database "portfolio_db" sudah dibuat (lihat schema.sql) dan kredensial di php/config.php sudah benar.', 500);
 }
 
-// Rate limiting sederhana berbasis sesi (maks 5 pesan / 10 menit)
 if (!isset($_SESSION['contact_window_start'])) {
     $_SESSION['contact_window_start'] = time();
     $_SESSION['contact_count_window'] = 0;
@@ -89,7 +82,6 @@ if ($_SESSION['contact_count_window'] >= $maxRequests) {
 
 $_SESSION['contact_count_window']++;
 
-// Honeypot anti-spam (input ini harus kosong)
 $honeypot = trim($_POST['website'] ?? '');
 if ($honeypot !== '') {
     respond(false, 'Permintaan ditolak.', 400);
@@ -130,7 +122,6 @@ if (!$stmt->execute()) {
 $stmt->close();
 $conn->close();
 
-// ==== Kirim Email (pakai mail() bawaan server/hosting) ====
 $to = 'haikalhafidz015@gmail.com';
 $emailSubject = 'Pesan Baru dari Portofolio: ' . $subject;
 $emailBody = "Anda menerima pesan baru dari portofolio Anda.\n\n"
@@ -150,7 +141,6 @@ $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
 
 $emailSent = @mail($to, $emailSubject, $emailBody, $headers);
 
-// ==== Kirim Notifikasi WhatsApp (via CallMeBot) ====
 $waMessage = "📩 Pesan baru dari Portofolio!\n"
     . "Nama: {$name}\n"
     . "Email: {$email}\n"
@@ -158,7 +148,4 @@ $waMessage = "📩 Pesan baru dari Portofolio!\n"
     . "Pesan: {$message}";
 
 $waSent = sendWhatsAppNotification($waMessage);
-
-// Pesan tetap dianggap berhasil karena SUDAH TERSIMPAN di database,
-// walaupun email/WA gagal terkirim (misalnya server belum mendukung mail()).
 respond(true, "Terima kasih, {$name}! Pesan Anda sudah tersimpan dan akan segera dibalas.");
