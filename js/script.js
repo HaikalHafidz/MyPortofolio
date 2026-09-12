@@ -584,6 +584,100 @@ function openWhatsAppWithText(number, text) {
     window.open(url, '_blank');
 }
 
+// Open default mail client (used by contact item)
+function openEmail() {
+    const email = 'haikalhafidz015@gmail.com';
+    window.location.href = `mailto:${email}`;
+}
+
+/* =========================================================
+   Kirim pesan langsung via WhatsApp / Email dari form kontak
+   Membaca isian form (nama, email, subjek, pesan), memvalidasi
+   secukupnya, lalu membuka WhatsApp/Email dengan teks siap kirim.
+   ========================================================= */
+(function initDirectContactChannels() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+
+    const waBtn = document.getElementById('sendViaWhatsApp');
+    const emailBtn = document.getElementById('sendViaEmail');
+    const WA_NUMBER = '62895433210605';
+    const TARGET_EMAIL = 'haikalhafidz015@gmail.com';
+
+    function getFormValues() {
+        return {
+            name: (document.getElementById('cf-name')?.value || '').trim(),
+            email: (document.getElementById('cf-email')?.value || '').trim(),
+            subject: (document.getElementById('cf-subject')?.value || '').trim(),
+            message: (document.getElementById('cf-message')?.value || '').trim()
+        };
+    }
+
+    function validateForDirectSend(values) {
+        const fields = [
+            { key: 'name', el: document.getElementById('cf-name'), label: 'Nama' },
+            { key: 'email', el: document.getElementById('cf-email'), label: 'Email' },
+            { key: 'subject', el: document.getElementById('cf-subject'), label: 'Subjek' },
+            { key: 'message', el: document.getElementById('cf-message'), label: 'Pesan' }
+        ];
+
+        let isValid = true;
+        fields.forEach(field => {
+            if (!values[field.key]) {
+                isValid = false;
+                if (field.el) showError(field.el, `${field.label} wajib diisi`);
+            } else if (field.key === 'email' && !isValidEmail(values.email)) {
+                isValid = false;
+                if (field.el) showError(field.el, 'Format email tidak valid');
+            } else if (field.el) {
+                clearError(field.el);
+            }
+        });
+
+        return isValid;
+    }
+
+    if (waBtn) {
+        waBtn.addEventListener('click', function () {
+            const values = getFormValues();
+            if (!validateForDirectSend(values)) {
+                showNotification('Lengkapi formulir dulu sebelum membuka WhatsApp.', 'error');
+                return;
+            }
+
+            const text = `Halo, saya ${values.name}.\n`
+                + `Email: ${values.email}\n`
+                + `Subjek: ${values.subject}\n\n`
+                + `${values.message}`;
+
+            openWhatsAppWithText(WA_NUMBER, text);
+            showNotification('Membuka WhatsApp dengan pesanmu...', 'success');
+        });
+    }
+
+    if (emailBtn) {
+        emailBtn.addEventListener('click', function () {
+            const values = getFormValues();
+            if (!validateForDirectSend(values)) {
+                showNotification('Lengkapi formulir dulu sebelum membuka Email.', 'error');
+                return;
+            }
+
+            const mailSubject = values.subject || `Pesan dari ${values.name}`;
+            const mailBody = `Nama: ${values.name}\n`
+                + `Email: ${values.email}\n\n`
+                + `${values.message}`;
+
+            const mailtoUrl = `mailto:${TARGET_EMAIL}`
+                + `?subject=${encodeURIComponent(mailSubject)}`
+                + `&body=${encodeURIComponent(mailBody)}`;
+
+            window.location.href = mailtoUrl;
+            showNotification('Membuka aplikasi Email dengan pesanmu...', 'success');
+        });
+    }
+})();
+
 // Add CSS for animations and modal
 const style = document.createElement('style');
 style.textContent = `
