@@ -2,6 +2,8 @@
 session_start();
 require_once __DIR__ . '/config.php';
 
+header('X-Content-Type-Options: nosniff');
+
 function isAjaxRequest(): bool
 {
     return (
@@ -10,12 +12,15 @@ function isAjaxRequest(): bool
     );
 }
 
-function respond(bool $success, string $message, int $httpCode = 200): void
+function respond(bool $success, string $message, int $httpCode = 200, array $extra = []): void
 {
     if (isAjaxRequest()) {
         http_response_code($httpCode);
-        header('Content-Type: application/json');
-        echo json_encode(['success' => $success, 'message' => $message]);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(array_merge([
+            'success' => $success,
+            'message' => $message,
+        ], $extra), JSON_UNESCAPED_UNICODE);
         exit;
     }
 
@@ -26,6 +31,12 @@ function respond(bool $success, string $message, int $httpCode = 200): void
         header('Location: ../index.html#contact');
     }
     exit;
+}
+
+/** Hilangkan karakter CR/LF agar tidak bisa dipakai untuk header injection */
+function sanitizeHeaderValue(string $value): string
+{
+    return trim(str_replace(["\r", "\n", "%0a", "%0d"], '', $value));
 }
 
 function sendWhatsAppNotification(string $message): bool
@@ -42,14 +53,60 @@ function sendWhatsAppNotification(string $message): bool
         . '&text=' . urlencode($message)
         . '&apikey=' . urlencode(WA_APIKEY);
 
-    $context = stream_context_create(['http' => ['timeout' => 5]]);
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true,
+        ]);
+        $result = curl_exec($ch);
+        $ok = $result !== false && curl_errno($ch) === 0;
+        curl_close($ch);
+        if ($ok) {
+            return true;
+        }
+    }
 
-    try {
+    if (ini_get('allow_url_fopen')) {
+        $context = stream_context_create(['http' => ['timeout' => 8]]);
         $result = @file_get_contents($url, false, $context);
         return $result !== false;
-    } catch (Throwable $e) {
-        return false;
     }
+
+    return false;
+}
+
+function sendOwnerEmailNotification(string $name, string $email, string $subject, string $message): bool
+{
+    $safeName = sanitizeHeaderValue($name);
+    $safeEmail = sanitizeHeaderValue($email);
+    $safeSubject = sanitizeHeaderValue($subject);
+
+    $emailSubject = mb_encode_mimeheader(
+        'Pesan Baru dari Portofolio: ' . $safeSubject,
+        'UTF-8'
+    );
+
+    $emailBody = "Anda menerima pesan baru dari portofolio Anda.\n\n"
+        . "Nama: {$safeName}\n"
+        . "Email: {$safeEmail}\n"
+        . "Subjek: {$safeSubject}\n"
+        . "Pesan:\n{$message}\n\n"
+        . 'Waktu: ' . date('Y-m-d H:i:s');
+
+    $fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
+    $fromEmail = 'noreply@' . preg_replace('/[^a-z0-9.\-]/i', '', $fromDomain);
+    $siteName = defined('SITE_NAME') ? SITE_NAME : 'Portfolio Contact';
+
+    $headers = "From: \"{$siteName}\" <{$fromEmail}>\r\n";
+    $headers .= "Reply-To: {$safeEmail}\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+
+    $to = defined('CONTACT_EMAIL_TO') ? CONTACT_EMAIL_TO : $safeEmail;
+
+    return @mail($to, $emailSubject, $emailBody, $headers);
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -110,36 +167,24 @@ if (!empty($errors)) {
     respond(false, implode(' ', $errors), 422);
 }
 
+$ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? ($_SERVER['REMOTE_ADDR'] ?? null);
+$userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+
 $stmt = $conn->prepare(
-    'INSERT INTO contacts (name, email, subject, message, created_at) VALUES (?, ?, ?, ?, NOW())'
+    'INSERT INTO contacts (name, email, subject, message, ip_address, user_agent, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, NOW())'
 );
-$stmt->bind_param('ssss', $name, $email, $subject, $message);
+$stmt->bind_param('ssssss', $name, $email, $subject, $message, $ipAddress, $userAgent);
 
 if (!$stmt->execute()) {
     respond(false, 'Gagal menyimpan pesan. Silakan coba lagi.', 500);
 }
 
+$insertedId = $stmt->insert_id;
 $stmt->close();
 $conn->close();
 
-$to = 'haikalhafidz015@gmail.com';
-$emailSubject = 'Pesan Baru dari Portofolio: ' . $subject;
-$emailBody = "Anda menerima pesan baru dari portofolio Anda.\n\n"
-    . "Nama: {$name}\n"
-    . "Email: {$email}\n"
-    . "Subjek: {$subject}\n"
-    . "Pesan:\n{$message}\n\n"
-    . 'Waktu: ' . date('Y-m-d H:i:s');
-
-$fromDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
-$fromEmail = 'noreply@' . preg_replace('/[^a-z0-9.\-]/i', '', $fromDomain);
-
-$headers = "From: \"Portfolio Contact\" <{$fromEmail}>\r\n";
-$headers .= "Reply-To: {$email}\r\n";
-$headers .= "MIME-Version: 1.0\r\n";
-$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
-
-$emailSent = @mail($to, $emailSubject, $emailBody, $headers);
+$emailSent = sendOwnerEmailNotification($name, $email, $subject, $message);
 
 $waMessage = "📩 Pesan baru dari Portofolio!\n"
     . "Nama: {$name}\n"
@@ -148,4 +193,11 @@ $waMessage = "📩 Pesan baru dari Portofolio!\n"
     . "Pesan: {$message}";
 
 $waSent = sendWhatsAppNotification($waMessage);
-respond(true, "Terima kasih, {$name}! Pesan Anda sudah tersimpan dan akan segera dibalas.");
+
+respond(true, "Terima kasih, {$name}! Pesan Anda sudah tersimpan dan akan segera dibalas.", 200, [
+    'id' => $insertedId,
+    'notifications' => [
+        'email' => $emailSent,
+        'whatsapp' => $waSent,
+    ],
+]);
