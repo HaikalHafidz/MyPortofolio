@@ -1051,6 +1051,15 @@ html {
     border-radius: 2px;
 }
 
+.contact-form-hint {
+    text-align: center;
+    color: var(--dark-text);
+    opacity: 0.75;
+    font-size: 0.9rem;
+    margin: -0.8rem 0 1.8rem;
+    line-height: 1.5;
+}
+
 .form-group {
     margin-bottom: 1.8rem;
     position: relative;
@@ -1107,6 +1116,76 @@ html {
 .contact-form .btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 12px 30px rgba(108, 99, 255, 0.4);
+}
+
+/* Contact action buttons: form submit + WhatsApp + Email */
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.form-actions .btn-primary,
+.btn-whatsapp,
+.btn-email {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 1.1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-whatsapp {
+    background: linear-gradient(135deg, #25D366, var(--success-color));
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
+}
+
+.btn-whatsapp:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(37, 211, 102, 0.4);
+}
+
+.btn-email {
+    background: transparent;
+    color: var(--light-text);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-email:hover {
+    transform: translateY(-3px);
+    background: rgba(108, 99, 255, 0.12);
+    box-shadow: 0 12px 30px rgba(108, 99, 255, 0.25);
+}
+
+.form-actions-note {
+    margin-top: 1rem;
+    font-size: 0.78rem;
+    color: var(--dark-text);
+    opacity: 0.65;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.form-actions-note i {
+    margin-top: 0.2rem;
+    color: var(--primary-color);
+}
+
+.contact-item[onclick] {
+    cursor: pointer;
 }
 
 /* Form Validation Styles */
@@ -1327,6 +1406,13 @@ footer p {
     .download-btn {
         width: 100%;
         justify-content: center;
+    }
+
+    .form-actions .btn-primary,
+    .btn-whatsapp,
+    .btn-email {
+        font-size: 0.9rem;
+        padding: 1rem 1.2rem;
     }
 
     .form-group input,
