@@ -590,11 +590,6 @@ function openEmail() {
     window.location.href = `mailto:${email}`;
 }
 
-/* =========================================================
-   Kirim pesan langsung via WhatsApp / Email dari form kontak
-   Membaca isian form (nama, email, subjek, pesan), memvalidasi
-   secukupnya, lalu membuka WhatsApp/Email dengan teks siap kirim.
-   ========================================================= */
 (function initDirectContactChannels() {
     const form = document.getElementById('contactForm');
     if (!form) return;
