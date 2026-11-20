@@ -6,7 +6,7 @@ Repositori ini berisi proyek website portofolio pribadi milik Muhammad Haikal Ha
 
 - **Nama**: Muhammad Haikal Hafidz
 - **Jenis proyek**: Website portofolio statis dengan fitur kontak dan donasi
-- **Teknologi**: HTML, CSS, JavaScript, PHP
+- **Teknologi**: HTML, CSS, JavaScript (form kontak lewat Formspree; backend Node.js + MySQL opsional untuk kontak dan like)
 
 ## Fitur
 
