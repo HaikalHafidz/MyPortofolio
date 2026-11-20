@@ -1,0 +1,66 @@
+/* Tombol like pada kartu Experience */
+.like {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.like__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--dark-text);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+
+.like__btn:hover {
+    border-color: var(--secondary-color);
+}
+
+.like__btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.like__btn[aria-pressed="true"] {
+    border-color: var(--secondary-color);
+    background-color: rgba(255, 122, 89, 0.12);
+    color: var(--secondary-color);
+}
+
+.like__btn[aria-pressed="true"] i {
+    animation: likePop 0.35s ease;
+}
+
+.like__text {
+    font-size: 0.85rem;
+    color: var(--dark-text);
+    opacity: 0.75;
+}
+
+.like__count {
+    font-weight: 600;
+}
+
+@keyframes likePop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.45); }
+    100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .like__btn[aria-pressed="true"] i {
+        animation: none;
+    }
+}
