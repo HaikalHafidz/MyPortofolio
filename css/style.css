@@ -27,6 +27,11 @@ body {
     overflow-x: hidden;
 }
 
+a[href^="http"] {
+    text-decoration: none;
+    color: inherit;
+}
+
 .container {
     width: 90%;
     max-width: 1200px;
