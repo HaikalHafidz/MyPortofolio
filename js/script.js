@@ -43,7 +43,9 @@ if (contactForm) {
     contactForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const inputs = this.querySelectorAll('input, textarea');
+        // Kecualikan honeypot anti-spam (name="_gotcha") dari validasi,
+        // karena field itu memang HARUS selalu kosong.
+        const inputs = this.querySelectorAll('input:not([name="_gotcha"]), textarea');
         let isValid = true;
 
         // Enhanced validation
@@ -73,28 +75,35 @@ if (contactForm) {
 
         try {
             const formData = new FormData(this);
-            const response = await fetch(this.getAttribute('action') || 'php/contact.php', {
+            const response = await fetch(this.getAttribute('action') || '/api/contact', {
                 method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
                 body: formData
             });
 
-            let data;
+            let data = {};
             try {
                 data = await response.json();
             } catch (parseErr) {
-                throw new Error('Respons server tidak valid.');
+                // Formspree tetap mengembalikan status OK meski body bukan JSON di sebagian kasus
             }
 
-            if (data.success) {
-                showNotification(data.message, 'success');
+            if (response.ok) {
+                showNotification('Terima kasih! Pesan Anda sudah terkirim ke email saya.', 'success');
                 this.reset();
             } else {
-                showNotification(data.message || 'Pesan gagal dikirim. Silakan coba lagi.', 'error');
+                // Formspree mengembalikan error dalam format { errors: [{ message: '...' }, ...] }
+                const errMsg = Array.isArray(data.errors) && data.errors.length
+                    ? data.errors.map(e => e.message).filter(Boolean).join(' ')
+                    : (data.message || 'Pesan gagal dikirim. Silakan coba lagi.');
+                showNotification(errMsg, 'error');
             }
         } catch (err) {
             showNotification(
-                'Tidak bisa terhubung ke server. Pastikan server PHP & database aktif, atau hubungi saya langsung via WhatsApp/Email.',
+                'Tidak bisa terhubung ke server. Coba lagi, atau hubungi saya langsung via WhatsApp/Email.',
                 'error'
             );
         } finally {
@@ -595,9 +604,7 @@ function openEmail() {
     if (!form) return;
 
     const waBtn = document.getElementById('sendViaWhatsApp');
-    const emailBtn = document.getElementById('sendViaEmail');
     const WA_NUMBER = '62895433210605';
-    const TARGET_EMAIL = 'haikalhafidz015@gmail.com';
 
     function getFormValues() {
         return {
@@ -647,28 +654,6 @@ function openEmail() {
 
             openWhatsAppWithText(WA_NUMBER, text);
             showNotification('Membuka WhatsApp dengan pesanmu...', 'success');
-        });
-    }
-
-    if (emailBtn) {
-        emailBtn.addEventListener('click', function () {
-            const values = getFormValues();
-            if (!validateForDirectSend(values)) {
-                showNotification('Lengkapi formulir dulu sebelum membuka Email.', 'error');
-                return;
-            }
-
-            const mailSubject = values.subject || `Pesan dari ${values.name}`;
-            const mailBody = `Nama: ${values.name}\n`
-                + `Email: ${values.email}\n\n`
-                + `${values.message}`;
-
-            const mailtoUrl = `mailto:${TARGET_EMAIL}`
-                + `?subject=${encodeURIComponent(mailSubject)}`
-                + `&body=${encodeURIComponent(mailBody)}`;
-
-            window.location.href = mailtoUrl;
-            showNotification('Membuka aplikasi Email dengan pesanmu...', 'success');
         });
     }
 })();
